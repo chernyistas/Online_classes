@@ -22,9 +22,16 @@ class User(AbstractBaseUser):
         blank=True,
         null=True,
     )
+    city = models.CharField(
+        max_length=100,
+        verbose_name="Город",
+        help_text="Введите город",
+        blank=True,
+        null=True,
+    )
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS: list[str] = []
 
     class Meta:
         verbose_name = "Пользователь"
