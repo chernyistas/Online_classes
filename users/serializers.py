@@ -15,3 +15,18 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         exclude = ["password"]
+
+
+class UserRegisterSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["email", "phone", "avatar", "city", "password"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop("password")
+        user = User(**validated_data)
+        user.set_password(password)
+        user.is_active = True
+        user.save()
+        return user
