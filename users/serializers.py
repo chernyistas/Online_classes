@@ -17,6 +17,12 @@ class UserSerializer(ModelSerializer):
         exclude = ["password"]
 
 
+class UserPublicSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ["password"]
+
+
 class UserRegisterSerializer(ModelSerializer):
     class Meta:
         model = User
