@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         try:
-            user = User.objects.get(email="admin@admin.ru")
+            user = User.objects.get(email="moder@test.com")
         except User.DoesNotExist:
             self.stdout.write(self.style.ERROR("Admin user not found! Run csu first."))
             return
