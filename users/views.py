@@ -1,27 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import (
-    CreateAPIView,
-    ListAPIView,
-    RetrieveAPIView,
-    UpdateAPIView,
-)
+from rest_framework.generics import (CreateAPIView, ListAPIView,
+                                     RetrieveAPIView, UpdateAPIView)
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 
 from users.models import Payment, User
 from users.permissions import IsOwner
-from users.serializers import (
-    PaymentSerializer,
-    UserPublicSerializer,
-    UserRegisterSerializer,
-    UserSerializer,
-)
-from users.services import (
-    create_checkout_session,
-    create_stripe_price,
-    create_stripe_product,
-)
+from users.serializers import (PaymentSerializer, UserPublicSerializer,
+                               UserRegisterSerializer, UserSerializer)
+from users.services import (create_checkout_session, create_stripe_price,
+                            create_stripe_product, retrieve_checkout_session)
 
 
 class UserUpdateAPIView(UpdateAPIView):
@@ -96,3 +87,38 @@ class PaymentCreateAPIView(CreateAPIView):
         payment.stripe_session_id = session_id
         payment.stripe_payment_url = payment_url
         payment.save()
+
+
+class PaymentRetrieveAPIView(RetrieveAPIView):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    permission_classes = [IsOwner]
+
+    def get(self, request, *args, **kwargs):
+        payment = self.get_object()
+        session_id = payment.stripe_session_id
+
+        if not session_id:
+            return Response(
+                {"error": "У этого платежа нет сессии Stripe"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        session = retrieve_checkout_session(session_id)
+
+        stripe_status = session.payment_status
+
+        if stripe_status == "paid":
+            payment.status = "paid"
+        elif stripe_status == "unpaid":
+            payment.status = "pending"
+
+        payment.save()
+
+        return Response(
+            {
+                "payment_id": payment.id,
+                "status": payment.status,
+                "stripe_status": stripe_status,
+            }
+        )

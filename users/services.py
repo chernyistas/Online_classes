@@ -29,3 +29,11 @@ def create_checkout_session(price_id, success_url, cancel_url):
         mode="payment",
     )
     return session.id, session.url
+
+
+def retrieve_checkout_session(session_id):
+    stripe.api_key = os.getenv("STRIPE_API_KEY")
+    session = stripe.checkout.Session.retrieve(
+        session_id,
+    )
+    return session
