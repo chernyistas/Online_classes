@@ -63,6 +63,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 PAYMENT_METHODS = [("cash", "наличные"), ("transfer", "перевод")]
+STRIPE_STATUS = [
+    ("pending", "в ожидании"),
+    ("paid", "оплачено"),
+    ("failed", "отказано"),
+]
 
 
 class Payment(models.Model):
@@ -92,6 +97,18 @@ class Payment(models.Model):
         choices=PAYMENT_METHODS,
         default="transfer",
         verbose_name="метод оплаты",
+    )
+    stripe_session_id = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name="id сессии"
+    )
+    stripe_payment_url = models.URLField(
+        max_length=500, blank=True, null=True, verbose_name="ссылка платежа"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STRIPE_STATUS,
+        default="pending",
+        verbose_name="статус платежа",
     )
 
     class Meta:

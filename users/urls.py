@@ -1,10 +1,14 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users.apps import UsersConfig
-from users.views import (PaymentListAPIView, UserCreateAPIView,
-                         UserRetrieveAPIView, UserUpdateAPIView)
+from users.views import (
+    PaymentCreateAPIView,
+    PaymentListAPIView,
+    UserCreateAPIView,
+    UserRetrieveAPIView,
+    UserUpdateAPIView,
+)
 
 app_name = UsersConfig.name
 
@@ -19,4 +23,5 @@ urlpatterns = [
         UserCreateAPIView.as_view(),
         name="register",
     ),
+    path("payments/create/", PaymentCreateAPIView.as_view(), name="payments-create"),
 ]

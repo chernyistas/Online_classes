@@ -1,9 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -21,15 +25,25 @@ class CourseViewSet(ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+
+        # Неавторизованный пользователь видит все курсы
+        if not user.is_authenticated:
+            return Course.objects.all()
+
+        # Модератор видит все курсы
         if user.groups.filter(name="moderators").exists():
             return Course.objects.all()
+
+        # Обычный пользователь видит только свои курсы
         return Course.objects.filter(owner=user)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
     def get_permissions(self):
-        if self.action == "create":
+        if self.action in ["list", "retrieve"]:
+            self.permission_classes = [AllowAny]
+        elif self.action == "create":
             self.permission_classes = [IsAuthenticated, ~IsModer]
         elif self.action in ["update", "partial_update"]:
             self.permission_classes = [IsAuthenticated, IsModer | IsOwner]
