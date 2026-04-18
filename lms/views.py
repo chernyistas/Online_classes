@@ -101,6 +101,16 @@ class LessonUpdateAPIView(UpdateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsModer | IsOwner]
 
+    def perform_update(self, serializer):
+        lesson = self.get_object()
+        course = lesson.course
+        last_update = course.last_updated
+        super().perform_update(serializer)
+
+        now = timezone.now()
+        if now - last_update > timedelta(hours=4):
+            send_course_update_email_notification.delay(course.id)
+
 
 class LessonCreateAPIView(CreateAPIView):
     queryset = Lesson.objects.all()
