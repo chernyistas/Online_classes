@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
@@ -11,6 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 from lms.models import Course, Lesson, Subscription
 from lms.paginators import StandardResultsSetPagination
 from lms.serializers import CourseSerializer, LessonSerializer
+from lms.tasks import send_course_update_email_notification
 from users.permissions import IsModer, IsOwner
 
 
@@ -47,6 +51,30 @@ class CourseViewSet(ModelViewSet):
             self.permission_classes = [IsAuthenticated, IsOwner]
 
         return [permission() for permission in self.permission_classes]
+
+    def update(self, request, *args, **kwargs):
+        last_update = self.get_object().last_updated
+        response = super().update(request, *args, **kwargs)
+        if response.status_code == 200:
+            new_course = self.get_object()
+            now = timezone.now()
+
+            if now - last_update > timedelta(hours=4):
+                send_course_update_email_notification.delay(new_course.id)
+
+        return response
+
+    def partial_update(self, request, *args, **kwargs):
+        last_update = self.get_object().last_updated
+        response = super().partial_update(request, *args, **kwargs)
+        if response.status_code == 200:
+            new_course = self.get_object()
+            now = timezone.now()
+
+            if now - last_update > timedelta(hours=4):
+                send_course_update_email_notification.delay(new_course.id)
+
+        return response
 
 
 class LessonListAPIView(ListAPIView):
