@@ -48,9 +48,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True,
     )
-
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    last_login = models.DateTimeField(auto_now=True, verbose_name="Последнее посещение")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS: list[str] = []
