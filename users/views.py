@@ -2,17 +2,19 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     RetrieveAPIView, UpdateAPIView)
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import Payment, User
 from users.permissions import IsOwner
-from users.serializers import (PaymentSerializer, UserPublicSerializer,
-                               UserRegisterSerializer, UserSerializer)
-from users.services import (create_checkout_session, create_stripe_price,
-                            create_stripe_product, retrieve_checkout_session)
+from users.serializers import PaymentSerializer, UserPublicSerializer, UserRegisterSerializer, UserSerializer
+from users.services import (
+    create_checkout_session,
+    create_stripe_price,
+    create_stripe_product,
+    retrieve_checkout_session,
+)
 
 
 class UserUpdateAPIView(UpdateAPIView):
@@ -77,9 +79,7 @@ class PaymentCreateAPIView(CreateAPIView):
             # 3. Создаем сессию
             success_url = "http://localhost:8000/lms/"
             cancel_url = "http://localhost:8000/lms/"
-            session_id, payment_url = create_checkout_session(
-                price.id, success_url, cancel_url
-            )
+            session_id, payment_url = create_checkout_session(price.id, success_url, cancel_url)
         except Exception as e:
             payment.delete()
             raise ValidationError(f"Ошибка при создании платежа в Stripe: {str(e)}")

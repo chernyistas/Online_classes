@@ -14,12 +14,8 @@ class UserProfileTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.user1 = User.objects.create_user(
-            email="user1@test.com", password="User1pass123"
-        )
-        self.user2 = User.objects.create_user(
-            email="user2@test.com", password="User2pass123"
-        )
+        self.user1 = User.objects.create_user(email="user1@test.com", password="User1pass123")
+        self.user2 = User.objects.create_user(email="user2@test.com", password="User2pass123")
         self.client.force_authenticate(user=self.user1)
 
         self.list_url = reverse("lms:lesson_list")
@@ -55,13 +51,9 @@ class PaymentTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.user = User.objects.create_user(
-            email="user@test.com", password="Userpass123"
-        )
+        self.user = User.objects.create_user(email="user@test.com", password="Userpass123")
         self.course = Course.objects.create(title="Course", owner=self.user)
-        Payment.objects.create(
-            user=self.user, paid_course=self.course, amount=1000, payment_method="cash"
-        )
+        Payment.objects.create(user=self.user, paid_course=self.course, amount=1000, payment_method="cash")
         self.client.force_authenticate(user=self.user)
         self.url = reverse("users:payment_list")
 
@@ -81,9 +73,7 @@ class PaymentCreateTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.user = User.objects.create_user(
-            email="user@test.com", password="Userpass123"
-        )
+        self.user = User.objects.create_user(email="user@test.com", password="Userpass123")
         self.course = Course.objects.create(title="Курс по Python", owner=self.user)
         self.url = reverse("users:payments-create")
         self.client.force_authenticate(user=self.user)
@@ -139,9 +129,7 @@ class PaymentCreateTestCase(APITestCase):
     def test_create_payment_both_course_and_lesson(self):
         """Тест на указание одновременно и курса и урока"""
 
-        lesson = Lesson.objects.create(
-            title="Урок 1", course=self.course, owner=self.user
-        )
+        lesson = Lesson.objects.create(title="Урок 1", course=self.course, owner=self.user)
 
         invalid_data = {
             "paid_course": self.course.id,
@@ -161,12 +149,8 @@ class PaymentStatusTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.owner = User.objects.create_user(
-            email="owner@test.com", password="Ownerpass123"
-        )
-        self.other_user = User.objects.create_user(
-            email="other@test.com", password="Otherpass123"
-        )
+        self.owner = User.objects.create_user(email="owner@test.com", password="Ownerpass123")
+        self.other_user = User.objects.create_user(email="other@test.com", password="Otherpass123")
         self.course = Course.objects.create(title="Тестовый курс", owner=self.owner)
         self.payment = Payment.objects.create(
             user=self.owner,

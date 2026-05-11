@@ -27,15 +27,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="payment",
             name="stripe_payment_url",
-            field=models.URLField(
-                blank=True, max_length=500, null=True, verbose_name="ссылка платежа"
-            ),
+            field=models.URLField(blank=True, max_length=500, null=True, verbose_name="ссылка платежа"),
         ),
         migrations.AddField(
             model_name="payment",
             name="stripe_session_id",
-            field=models.CharField(
-                blank=True, max_length=255, null=True, verbose_name="id сессии"
-            ),
+            field=models.CharField(blank=True, max_length=255, null=True, verbose_name="id сессии"),
         ),
     ]

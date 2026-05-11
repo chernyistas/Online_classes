@@ -17,9 +17,7 @@ class Migration(migrations.Migration):
             name="last_login",
             field=models.DateTimeField(
                 auto_now=True,
-                default=datetime.datetime(
-                    2026, 4, 18, 9, 14, 34, 261208, tzinfo=datetime.timezone.utc
-                ),
+                default=datetime.datetime(2026, 4, 18, 9, 14, 34, 261208, tzinfo=datetime.timezone.utc),
                 verbose_name="Последнее посещение",
             ),
             preserve_default=False,

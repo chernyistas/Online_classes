@@ -12,23 +12,15 @@ class LessonTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.owner = User.objects.create_user(
-            email="owner@test.com", password="Ownerpass123"
-        )
-        self.moder = User.objects.create_user(
-            email="moder@test.com", password="Moderpass123"
-        )
-        self.user = User.objects.create_user(
-            email="user@test.com", password="Userpass123"
-        )
+        self.owner = User.objects.create_user(email="owner@test.com", password="Ownerpass123")
+        self.moder = User.objects.create_user(email="moder@test.com", password="Moderpass123")
+        self.user = User.objects.create_user(email="user@test.com", password="Userpass123")
         group, created = Group.objects.get_or_create(name="moderators")
         self.moder.groups.add(group)
 
         self.course = Course.objects.create(title="Тестовый курс", owner=self.owner)
 
-        self.lesson = Lesson.objects.create(
-            title="Тестовый урок", owner=self.owner, course=self.course
-        )
+        self.lesson = Lesson.objects.create(title="Тестовый урок", owner=self.owner, course=self.course)
 
         self.client.force_authenticate(user=self.owner)
 
@@ -119,9 +111,7 @@ class SubscriptionTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.user = User.objects.create_user(
-            email="user@test.com", password="Userpass123"
-        )
+        self.user = User.objects.create_user(email="user@test.com", password="Userpass123")
         self.client.force_authenticate(user=self.user)
         self.course = Course.objects.create(title="Курс для подписки", owner=self.user)
         self.url = reverse("lms:subscription")
@@ -131,9 +121,7 @@ class SubscriptionTestCase(APITestCase):
         response = self.client.post(self.url, {"course_id": self.course.pk})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "подписка добавлена")
-        self.assertTrue(
-            Subscription.objects.filter(user=self.user, course=self.course).exists()
-        )
+        self.assertTrue(Subscription.objects.filter(user=self.user, course=self.course).exists())
 
     def test_unsubscribe_from_course(self):
         """Тест отписки от курса"""
@@ -141,9 +129,7 @@ class SubscriptionTestCase(APITestCase):
         response = self.client.post(self.url, {"course_id": self.course.pk})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["message"], "подписка удалена")
-        self.assertFalse(
-            Subscription.objects.filter(user=self.user, course=self.course).exists()
-        )
+        self.assertFalse(Subscription.objects.filter(user=self.user, course=self.course).exists())
 
     def test_subscribe_missing_course_id(self):
         """Тест: course_id не передан"""
@@ -161,15 +147,9 @@ class CourseTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка данных перед каждым тестом"""
-        self.owner = User.objects.create_user(
-            email="owner@test.com", password="Ownerpass123"
-        )
-        self.moder = User.objects.create_user(
-            email="moder@test.com", password="Moderpass123"
-        )
-        self.user = User.objects.create_user(
-            email="user@test.com", password="Userpass123"
-        )
+        self.owner = User.objects.create_user(email="owner@test.com", password="Ownerpass123")
+        self.moder = User.objects.create_user(email="moder@test.com", password="Moderpass123")
+        self.user = User.objects.create_user(email="user@test.com", password="Userpass123")
         self.course = Course.objects.create(title="Тестовый курс", owner=self.owner)
         self.client.force_authenticate(user=self.owner)
         group, created = Group.objects.get_or_create(name="moderators")

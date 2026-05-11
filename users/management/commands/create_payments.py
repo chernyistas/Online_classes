@@ -17,16 +17,12 @@ class Command(BaseCommand):
 
         course = Course.objects.first()
         if not course:
-            self.stdout.write(
-                self.style.ERROR("No courses found! Create a course first.")
-            )
+            self.stdout.write(self.style.ERROR("No courses found! Create a course first."))
             return
 
         lesson = Lesson.objects.first()
         if not lesson:
-            self.stdout.write(
-                self.style.ERROR("No lessons found! Create a lesson first.")
-            )
+            self.stdout.write(self.style.ERROR("No lessons found! Create a lesson first."))
             return
 
         payments_data = [
@@ -60,6 +56,4 @@ class Command(BaseCommand):
                 )
             )
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Successfully created {created_count} payments!")
-        )
+        self.stdout.write(self.style.SUCCESS(f"Successfully created {created_count} payments!"))
