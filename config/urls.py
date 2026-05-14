@@ -25,9 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("lms/", include("lms.urls", namespace="lms")),
     path("users/", include("users.urls", namespace="users")),
-    path(
-        "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
-    ),
+    path("swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path(
         "",
         schema_view.with_ui("swagger", cache_timeout=0),

@@ -24,9 +24,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username = None
 
-    email = models.EmailField(
-        unique=True, verbose_name="Почта", help_text="Введите почту"
-    )
+    email = models.EmailField(unique=True, verbose_name="Почта", help_text="Введите почту")
     phone = models.CharField(
         max_length=35,
         verbose_name="Телефон",
@@ -71,9 +69,7 @@ STRIPE_STATUS = [
 
 
 class Payment(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="пользователь"
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="пользователь")
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата оплаты")
     paid_course = models.ForeignKey(
         Course,
@@ -89,21 +85,15 @@ class Payment(models.Model):
         blank=True,
         null=True,
     )
-    amount = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name="Сумма оплаты"
-    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма оплаты")
     payment_method = models.CharField(
         max_length=50,
         choices=PAYMENT_METHODS,
         default="transfer",
         verbose_name="метод оплаты",
     )
-    stripe_session_id = models.CharField(
-        max_length=255, blank=True, null=True, verbose_name="id сессии"
-    )
-    stripe_payment_url = models.URLField(
-        max_length=500, blank=True, null=True, verbose_name="ссылка платежа"
-    )
+    stripe_session_id = models.CharField(max_length=255, blank=True, null=True, verbose_name="id сессии")
+    stripe_payment_url = models.URLField(max_length=500, blank=True, null=True, verbose_name="ссылка платежа")
     status = models.CharField(
         max_length=20,
         choices=STRIPE_STATUS,

@@ -21,8 +21,6 @@ class Command(BaseCommand):
             group.permissions.add(change_course)
             group.permissions.add(view_course)
             group.save()
-            self.stdout.write(
-                self.style.SUCCESS("Successfully created group with permissions")
-            )
+            self.stdout.write(self.style.SUCCESS("Successfully created group with permissions"))
         else:
             self.stdout.write(self.style.WARNING(f"Group - {group} already exist"))

@@ -6,9 +6,6 @@ def validate_youtube_link(value):
     if not value:
         return value
 
-    if not (
-        value.startswith("https://www.youtube.com")
-        or value.startswith("https://youtu.be/")
-    ):
+    if not (value.startswith("https://www.youtube.com") or value.startswith("https://youtu.be/")):
         raise ValidationError("Можно использовать только ссылки на YouTube")
     return value

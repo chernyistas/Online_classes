@@ -27,9 +27,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "date_subscribed",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="Дата подписки"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки"),
                 ),
                 (
                     "course",

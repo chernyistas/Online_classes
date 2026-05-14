@@ -13,8 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="course",
             name="last_updated",
-            field=models.DateTimeField(
-                auto_now=True, verbose_name="Последнее обновление курса"
-            ),
+            field=models.DateTimeField(auto_now=True, verbose_name="Последнее обновление курса"),
         ),
     ]
